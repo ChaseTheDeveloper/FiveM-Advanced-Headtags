@@ -9,7 +9,6 @@ local function DrawText3D(x, y, z, id, role, name)
         local textScale = 0.32
         local idLength = string.len(id) * 0.002
         
-        -- ID Bracket Left
         SetTextFont(0)
         SetTextProportional(0)
         SetTextScale(textScale, textScale)
@@ -20,7 +19,6 @@ local function DrawText3D(x, y, z, id, role, name)
         AddTextComponentString("[")
         DrawText(_x - 0.018, _y)
         
-        -- ID Number
         SetTextScale(textScale, textScale)
         SetTextColour(Config.IDColor.r, Config.IDColor.g, Config.IDColor.b, 255)
         SetTextEntry("STRING")
@@ -29,7 +27,6 @@ local function DrawText3D(x, y, z, id, role, name)
         AddTextComponentString(id)
         DrawText(_x - (0.016 - idLength), _y)
         
-        -- ID Bracket Right
         SetTextScale(textScale, textScale)
         SetTextColour(Config.RightBracket.r, Config.RightBracket.g, Config.RightBracket.b, 255)
         SetTextEntry("STRING")
@@ -38,7 +35,6 @@ local function DrawText3D(x, y, z, id, role, name)
         AddTextComponentString("]")
         DrawText(_x - (0.014 - idLength * 3.3), _y)
         
-        -- Role Tag
         SetTextScale(textScale, textScale)
         SetTextColour(role.color.r, role.color.g, role.color.b, 255)
         SetTextEntry("STRING")
@@ -47,7 +43,6 @@ local function DrawText3D(x, y, z, id, role, name)
         AddTextComponentString(role.tag)
         DrawText(_x + (0.0000001 + idLength), _y)
         
-        -- Separator
         SetTextScale(textScale, textScale)
         SetTextColour(Config.SeparatorColor.r, Config.SeparatorColor.g, Config.SeparatorColor.b, 255)
         SetTextEntry("STRING")
@@ -56,7 +51,6 @@ local function DrawText3D(x, y, z, id, role, name)
         AddTextComponentString(" |")
         DrawText(_x + (role.spacing + idLength), _y)
         
-        -- Name
         SetTextScale(textScale, textScale)
         SetTextColour(Config.NameColor.r, Config.NameColor.g, Config.NameColor.b, 255)
         SetTextEntry("STRING")
@@ -126,11 +120,9 @@ AddEventHandler('playerSpawned', function()
 end)
 
 RegisterCommand('tagtest', function(source, args)
-    -- Get player's roles from Badger Discord API using the server
     TriggerServerEvent('headtags:checkDeveloper', args)
 end)
 
--- Add this event handler
 RegisterNetEvent('headtags:developerCheck')
 AddEventHandler('headtags:developerCheck', function(isDeveloper, args)
     if not isDeveloper then
