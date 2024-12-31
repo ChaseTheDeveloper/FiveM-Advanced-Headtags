@@ -1,5 +1,7 @@
 local function getRoleFromDiscord(source)
     local discordRoles = exports.Badger_Discord_API:GetDiscordRoles(source)
+    local highestPriority = 0
+    local selectedRole = Config.DefaultTag
     
     print("Discord Roles for player: ", json.encode(discordRoles))
     
@@ -7,12 +9,16 @@ local function getRoleFromDiscord(source)
         for _, roleId in pairs(discordRoles) do
             local roleIdString = tostring(roleId)
             if Config.DiscordRoles[roleIdString] then
-                return Config.DiscordRoles[roleIdString]
+                local rolePriority = Config.DiscordRoles[roleIdString].priority or 0
+                if rolePriority > highestPriority then
+                    highestPriority = rolePriority
+                    selectedRole = Config.DiscordRoles[roleIdString]
+                end
             end
         end
     end
     
-    return Config.DefaultTag
+    return selectedRole
 end
 
 RegisterNetEvent('headtags:getRoles')
@@ -52,7 +58,6 @@ RegisterCommand('settag', function(source, args)
     local highestRolePriority = 0
     local currentRole = nil
     
-    -- Get player's highest role
     for _, roleId in pairs(playerRoles) do
         local roleIdString = tostring(roleId)
         if Config.DiscordRoles[roleIdString] then
@@ -69,7 +74,6 @@ RegisterCommand('settag', function(source, args)
 
     if not currentRole then return end
 
-    -- Check if tag exists and player has permission
     if args[1] then
         local requestedTag = table.concat(args, " ")
         local targetRole = nil
