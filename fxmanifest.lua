@@ -4,7 +4,7 @@ game 'gta5'
 
 author 'Chase https://discord.gg/EgctWPu7St'
 description 'Custom Head Tags with Discord API/Ace permissions and Mythic Notify'
-version '1.0.0'
+version '1.0.4'
 
 shared_script 'config.lua'
 
