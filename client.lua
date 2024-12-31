@@ -1,4 +1,4 @@
-local headTagsEnabled = false
+local headTagsEnabled = Config.enabledbydefualt
 local currentRole = Config.DefaultTag
 
 local function DrawText3D(x, y, z, id, role, name)
@@ -8,6 +8,7 @@ local function DrawText3D(x, y, z, id, role, name)
     if onScreen then
         local textScale = 0.32
         local idLength = string.len(id) * 0.002
+        _x = _x - 0.03
         
         SetTextFont(0)
         SetTextProportional(0)
@@ -19,6 +20,8 @@ local function DrawText3D(x, y, z, id, role, name)
         AddTextComponentString("[")
         DrawText(_x - 0.018, _y)
         
+        SetTextFont(0)
+        SetTextProportional(0)
         SetTextScale(textScale, textScale)
         SetTextColour(Config.IDColor.r, Config.IDColor.g, Config.IDColor.b, 255)
         SetTextEntry("STRING")
@@ -27,48 +30,55 @@ local function DrawText3D(x, y, z, id, role, name)
         AddTextComponentString(id)
         DrawText(_x - (0.016 - idLength), _y)
         
+        SetTextFont(0)
+        SetTextProportional(0)
         SetTextScale(textScale, textScale)
         SetTextColour(Config.RightBracket.r, Config.RightBracket.g, Config.RightBracket.b, 255)
         SetTextEntry("STRING")
         SetTextEdge(4, 0, 0, 0, 255)
         SetTextOutline()
         AddTextComponentString("]")
-        DrawText(_x - (0.014 - idLength * 3.3), _y)
+        DrawText(_x - (0.014 - idLength * 2.5), _y)
         
+        SetTextFont(0)
+        SetTextProportional(0)
         SetTextScale(textScale, textScale)
         SetTextColour(role.color.r, role.color.g, role.color.b, 255)
         SetTextEntry("STRING")
         SetTextEdge(4, 0, 0, 0, 255)
         SetTextOutline()
         AddTextComponentString(role.tag)
-        DrawText(_x + (0.0000001 + idLength), _y)
+        DrawText(_x + (-0.005 + idLength), _y)
         
+        SetTextFont(0)
+        SetTextProportional(0)
         SetTextScale(textScale, textScale)
         SetTextColour(Config.SeparatorColor.r, Config.SeparatorColor.g, Config.SeparatorColor.b, 255)
         SetTextEntry("STRING")
         SetTextEdge(4, 0, 0, 0, 255)
         SetTextOutline()
-        AddTextComponentString(" |")
-        DrawText(_x + (role.spacing + idLength), _y)
+        AddTextComponentString("|")
+        DrawText(_x + (role.spacing - 0.007 + idLength), _y)
         
+        SetTextFont(0)
+        SetTextProportional(0)
         SetTextScale(textScale, textScale)
         SetTextColour(Config.NameColor.r, Config.NameColor.g, Config.NameColor.b, 255)
         SetTextEntry("STRING")
         SetTextEdge(4, 0, 0, 0, 255)
         SetTextOutline()
         AddTextComponentString(" " .. name)
-        DrawText(_x + (role.spacing + 0.006 + idLength), _y)
+        DrawText(_x + (role.spacing + -0.005 + idLength), _y)
     end
 end
 
 function ManageHeadTags()
-    if headTagsEnabled then
+    if headTagsEnabled and not Config.disabletags then
         local myId = PlayerId()
         for _, playerId in ipairs(GetActivePlayers()) do
             if NetworkIsPlayerActive(playerId) and (Config.ShowSelfTag or playerId ~= myId) then
                 local ped = GetPlayerPed(playerId)
                 local dist = #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(ped))
-
                 if dist < Config.TagDistance then
                     local id = GetPlayerServerId(playerId)
                     local name = GetPlayerName(playerId)
@@ -81,6 +91,9 @@ function ManageHeadTags()
 end
 
 function ToggleHeadTags()
+    if Config.disabletags then return end
+    if Config.locktag and headTagsEnabled then return end
+    
     headTagsEnabled = not headTagsEnabled
     local message = headTagsEnabled and Config.EnableNotify or Config.DisableNotify
     
@@ -199,3 +212,25 @@ AddEventHandler('headtags:developerCheck', function(isDeveloper, args)
         })
     end
 end)
+
+RegisterNetEvent('onClientGameTypeStart', function()
+    TriggerServerEvent('headtags:getRoles')
+end)
+
+function ToggleHeadTags()
+    if Config.disabletags then return end
+    if Config.locktag and headTagsEnabled then return end
+    
+    headTagsEnabled = not headTagsEnabled
+    local message = headTagsEnabled and Config.EnableNotify or Config.DisableNotify
+    
+    TriggerEvent('mythic_notify:client:SendAlert', {
+        type = 'inform',
+        text = message,
+        style = {
+            ['background-color'] = Config.BackGroundColor,
+            ['color'] = Config.TextColor
+        },
+        length = tonumber(Config.Length)
+    })
+end
