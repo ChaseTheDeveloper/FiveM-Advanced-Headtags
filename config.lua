@@ -2,6 +2,9 @@ Config = {}
 -- there is also a command for this
 Config.Keybind = "HOME"
 Config.TagDistance = 10
+Config.enabledbydefualt = true -- the tags will be enabled when a player joins by defualt if set to true
+Config.disabletags = false -- makes it so tags cant be toggled by anyone at all
+Config.locktag = false -- if true it will lock the tag so it cant be toggled OFF meaning the tag is stuck above the players head
 Config.DefaultColor = { r = 0, g = 172, b = 255 }
 Config.DefaultTag = {
     tag = "Civilian",
